@@ -15,17 +15,20 @@ student = st.text_input("Öğrenci Adı:")
 excel_url = "https://raw.githubusercontent.com/SymDmrcn/bepuygulama/main/VERİLER.xlsx"
 
 try:
-    # 🔹 Excel dosyasını internetten oku (UTF-8 formatında)
+    # 🔹 Excel dosyasını UTF-8 ile oku (Burası önemli!)
     response = urllib.request.urlopen(excel_url)
-    excel_data = BytesIO(response.read())  # 🔹 Belleğe al
+    excel_data = BytesIO(response.read())  # Belleğe al
     df = pd.read_excel(excel_data, sheet_name="Sayfa1", skiprows=1, engine="openpyxl")
+
+    # 🔹 Tüm metinleri UTF-8 formatına çevir
+    df = df.astype(str).applymap(lambda x: x.encode("utf-8", "ignore").decode("utf-8"))
 
     # 🔹 Sütun isimlerini düzenle
     df.columns = ["GRUP", "DERS", "KISA VADELİ HEDEFLER", "UZUN VADELİ HEDEFLER", "ÖĞRETİMSEL HEDEFLER"]
     df = df.dropna(how="all")
 
 except Exception as e:
-    st.error(f"Excel dosyası yüklenirken hata oluştu: {e}")
+    st.error(f"❌ Excel dosyası yüklenirken hata oluştu:\n\n{e}")
     st.stop()
 
 # 📌 Grup seçimi
