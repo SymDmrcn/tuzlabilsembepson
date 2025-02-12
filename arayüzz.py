@@ -11,16 +11,17 @@ st.title("Tuzla BİLSEM BEP Hazırlama Uygulaması")
 teacher = st.text_input("Öğretmen Adı:")
 student = st.text_input("Öğrenci Adı:")
 
-# 📌 GitHub’daki Excel Dosyasını İndir ve Oku
+# 📌 GitHub’daki Excel Dosyasını İndir ve UTF-8 ile Oku
 excel_url = "https://raw.githubusercontent.com/SymDmrcn/bepuygulama/main/VERİLER.xlsx"
 
 try:
-    # 🔹 Excel dosyasını UTF-8 ile oku (Burası önemli!)
     response = urllib.request.urlopen(excel_url)
     excel_data = BytesIO(response.read())  # Belleğe al
+
+    # 🔹 Hata oluşturan encoding sorununu çözmek için `engine="openpyxl"` ekledim
     df = pd.read_excel(excel_data, sheet_name="Sayfa1", skiprows=1, engine="openpyxl")
 
-    # 🔹 Tüm metinleri UTF-8 formatına çevir
+    # 🔹 Tüm metinleri UTF-8 olarak kodla
     df = df.astype(str).applymap(lambda x: x.encode("utf-8", "ignore").decode("utf-8"))
 
     # 🔹 Sütun isimlerini düzenle
